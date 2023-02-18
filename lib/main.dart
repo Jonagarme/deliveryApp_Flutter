@@ -14,7 +14,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
   @override
   void initState() {
     // TODO: implement initState
@@ -27,9 +26,23 @@ class _MyAppState extends State<MyApp> {
       title: 'Delivery Udemy',
       debugShowCheckedModeBanner: false,
       initialRoute: '/',
-      getPages: [
-        GetPage(name: '/', page: ()=> LoginPage())
-      ],
+      getPages: [GetPage(name: '/', page: () => LoginPage())],
+      theme: ThemeData(
+        primaryColor: Colors.amber,
+        colorScheme: ColorScheme(
+          brightness: Brightness.light,
+          onBackground: Colors.grey,
+          secondary: Colors.amberAccent,
+          primary: Colors.amber,
+          onPrimary: Colors.grey,
+          surface: Colors.grey,
+          onSurface: Colors.grey,
+          error: Colors.grey,
+          onError: Colors.grey,
+          onSecondary: Colors.grey,
+          background: Colors.grey,
+        ),
+      ),
       navigatorKey: Get.key,
     );
   }
