@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app_delivery/src/pages/register/register_controller.dart';
 import 'package:get/get.dart';
 
 class RegisterPage extends StatelessWidget {
-  const RegisterPage({super.key});
+  RegisterController con = Get.put(RegisterController());
 
   @override
   Widget build(BuildContext context) {
@@ -84,6 +85,7 @@ class RegisterPage extends StatelessWidget {
         horizontal: 40,
       ),
       child: TextField(
+        controller: con.emailController,
         keyboardType: TextInputType.emailAddress,
         decoration: InputDecoration(
           hintText: 'Correo electronico',
@@ -99,6 +101,7 @@ class RegisterPage extends StatelessWidget {
         horizontal: 40,
       ),
       child: TextField(
+        controller: con.nameController,
         keyboardType: TextInputType.text,
         decoration: InputDecoration(
           hintText: 'Nombre',
@@ -114,6 +117,7 @@ class RegisterPage extends StatelessWidget {
         horizontal: 40,
       ),
       child: TextField(
+        controller: con.lastnameController,
         keyboardType: TextInputType.text,
         decoration: InputDecoration(
           hintText: 'Apellido',
@@ -129,6 +133,7 @@ class RegisterPage extends StatelessWidget {
         horizontal: 40,
       ),
       child: TextField(
+        controller: con.phoneController,
         keyboardType: TextInputType.number,
         decoration: InputDecoration(
           hintText: 'Telefono',
@@ -144,6 +149,7 @@ class RegisterPage extends StatelessWidget {
         horizontal: 40,
       ),
       child: TextField(
+        controller: con.passwordController,
         keyboardType: TextInputType.text,
         obscureText: true,
         decoration: InputDecoration(
@@ -160,6 +166,7 @@ class RegisterPage extends StatelessWidget {
         horizontal: 40,
       ),
       child: TextField(
+        controller: con.confirmPasswordController,
         keyboardType: TextInputType.text,
         obscureText: true,
         decoration: InputDecoration(
@@ -178,7 +185,7 @@ class RegisterPage extends StatelessWidget {
         vertical: 40,
       ),
       child: ElevatedButton(
-        onPressed: () {},
+        onPressed: () => con.register(),
         style: ElevatedButton.styleFrom(
           padding: EdgeInsets.symmetric(
             vertical: 15,
