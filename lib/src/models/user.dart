@@ -29,7 +29,7 @@ class User {
   String? sessionToken;
 
   factory User.fromJson(Map<String, dynamic> json) => User(
-        id: json["id"].toString(),
+        id: json["id"],
         email: json["email"],
         name: json["name"],
         lastname: json["lastname"],
