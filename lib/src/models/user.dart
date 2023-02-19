@@ -10,13 +10,13 @@ String userToJson(User data) => json.encode(data.toJson());
 
 class User {
   User({
-    required this.id,
-    required this.email,
-    required this.name,
-    required this.lastname,
-    required this.phone,
-    required this.image,
-    required this.password,
+    this.id,
+    this.email,
+    this.name,
+    this.lastname,
+    this.phone,
+    this.image,
+    this.password,
   });
 
   String? id;
