@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app_delivery/src/models/user.dart';
+import 'package:flutter_app_delivery/src/providers/users_providers.dart';
 import 'package:get/get.dart';
 
 class RegisterController extends GetxController {
@@ -9,10 +11,12 @@ class RegisterController extends GetxController {
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
 
-  void register() {
+  UsersProvider usersProvider = UsersProvider();
+
+  void register() async {
     String email = emailController.text.trim();
     String name = nameController.text;
-    String lastName = lastnameController.text;
+    String lastname = lastnameController.text;
     String phone = phoneController.text;
     String password = passwordController.text.trim();
     String confirmPassword = confirmPasswordController.text.trim();
@@ -20,13 +24,26 @@ class RegisterController extends GetxController {
     print('Email ${email}');
     print('Password ${password}');
 
-    if (isValidForm(email, name, lastName, phone, password, confirmPassword)) {
+    if (isValidForm(email, name, lastname, phone, password, confirmPassword)) {
+
+      User user = User(
+        email: email,
+        name: name,
+        lastname: lastname,
+        phone: phone,
+        password: password,
+        );
+
+        Response response = await usersProvider.create(user);
+
+        print('Response: ${response.body}');
+
       Get.snackbar(
           'Formulario valido', 'Estas listo para enviar la peticion http');
     }
   }
 
-  bool isValidForm(String email, String name, String lastName, String phone,
+  bool isValidForm(String email, String name, String lastname, String phone,
       String confirmPassword, String password) {
     if (email.isEmpty) {
       Get.snackbar('Formulario no valido', 'Debes ingresar el Email');
@@ -43,7 +60,7 @@ class RegisterController extends GetxController {
       return false;
     }
 
-    if (lastName.isEmpty) {
+    if (lastname.isEmpty) {
       Get.snackbar('Formulario no valido', 'Debes ingresar el Apellido');
       return false;
     }
