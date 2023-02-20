@@ -37,7 +37,7 @@ class LoginController extends GetxController {
   }
 
   void goToHomePage() {
-    Get.toNamed('/home');
+    Get.offNamedUntil('/home', (route) => false);
   }
 
   bool isValidForm(String email, String password) {
