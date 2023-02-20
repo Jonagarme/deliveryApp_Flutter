@@ -25,18 +25,17 @@ class RegisterController extends GetxController {
     print('Password ${password}');
 
     if (isValidForm(email, name, lastname, phone, password, confirmPassword)) {
-
       User user = User(
         email: email,
         name: name,
         lastname: lastname,
         phone: phone,
         password: password,
-        );
+      );
 
-        Response response = await usersProvider.create(user);
+      Response response = await usersProvider.create(user);
 
-        print('Response: ${response.body}');
+      print('Response: ${response.body}');
 
       Get.snackbar(
           'Formulario valido', 'Estas listo para enviar la peticion http');
@@ -87,5 +86,28 @@ class RegisterController extends GetxController {
       return false;
     }
     return true;
+  }
+
+  void showAlertDialog(BuildContext context) {
+    Widget galleryButton = ElevatedButton(
+      onPressed: () {},
+      child: Text('GALERIA'),
+    );
+
+    Widget cameraButton = ElevatedButton(
+      onPressed: () {},
+      child: Text('CAMARA'),
+    );
+
+    AlertDialog alertDialog = AlertDialog(
+      title: Text('Selecciona una opcion'),
+      actions: [
+        galleryButton,
+        cameraButton
+      ],
+    );
+    showDialog(context: context, builder: (BuildContext context){
+      return alertDialog;
+    });
   }
 }
