@@ -1,9 +1,12 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app_delivery/src/models/response_api.dart';
 import 'package:flutter_app_delivery/src/models/user.dart';
 import 'package:flutter_app_delivery/src/providers/users_providers.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:image_picker/image_picker.dart';
 
 class RegisterController extends GetxController {
@@ -39,34 +42,44 @@ class RegisterController extends GetxController {
         password: password,
       );
 
-      Response response = await usersProvider.create(user);
+      Stream stream = await usersProvider.createWithImageUser(user, imageFile!);
+      stream.listen((res) {
+        ResponseApi responseApi = ResponseApi.fromJson(json.decode(res));
 
-      print('Response: ${response.body}');
-
-      Get.snackbar(
-          'Formulario valido', 'Estas listo para enviar la peticion http');
+        if (responseApi.success == true) {
+          GetStorage()
+              .write('user', responseApi.data); // DATOS DEL USUARIO EN SESION
+          goToHomePage();
+        } else {
+          Get.snackbar('Registro fallido', responseApi.message ?? '');
+        }
+      });
     }
   }
 
+  void goToHomePage() {
+    Get.offNamedUntil('/home', (route) => false);
+  }
+
   bool isValidForm(String email, String name, String lastname, String phone,
-      String confirmPassword, String password) {
+      String password, String confirmPassword) {
     if (email.isEmpty) {
-      Get.snackbar('Formulario no valido', 'Debes ingresar el Email');
+      Get.snackbar('Formulario no valido', 'Debes ingresar el email');
       return false;
     }
 
     if (!GetUtils.isEmail(email)) {
-      Get.snackbar('Formulario no valido', 'Debes ingresar el Email');
+      Get.snackbar('Formulario no valido', 'El email no es valido');
       return false;
     }
 
     if (name.isEmpty) {
-      Get.snackbar('Formulario no valido', 'Debes ingresar el Nombre');
+      Get.snackbar('Formulario no valido', 'Debes ingresar tu nombre');
       return false;
     }
 
     if (lastname.isEmpty) {
-      Get.snackbar('Formulario no valido', 'Debes ingresar el Apellido');
+      Get.snackbar('Formulario no valido', 'Debes ingresar tu apellido');
       return false;
     }
 
@@ -77,7 +90,7 @@ class RegisterController extends GetxController {
     }
 
     if (password.isEmpty) {
-      Get.snackbar('Formulario no valido', 'Debes ingresar el Password');
+      Get.snackbar('Formulario no valido', 'Debes ingresar el password');
       return false;
     }
 
@@ -88,16 +101,21 @@ class RegisterController extends GetxController {
     }
 
     if (password != confirmPassword) {
-      Get.snackbar('Formulario no valido', 'Las contraseñan no coinciden');
+      Get.snackbar('Formulario no valido', 'los password no coinciden');
       return false;
     }
+
+    if (imageFile == null) {
+      Get.snackbar(
+          'Formulario no valido', 'Debes seleccionar una imagen de perfil');
+      return false;
+    }
+
     return true;
   }
 
   Future selectImage(ImageSource imageSource) async {
-    XFile? image = await picker.pickImage(
-      source: imageSource,
-    );
+    XFile? image = await picker.pickImage(source: imageSource);
     if (image != null) {
       imageFile = File(image.path);
       update();
@@ -106,35 +124,29 @@ class RegisterController extends GetxController {
 
   void showAlertDialog(BuildContext context) {
     Widget galleryButton = ElevatedButton(
-      onPressed: () {
-        Get.back();
-        selectImage(ImageSource.gallery);
-      },
-      child: Text(
-        'GALERIA',
-        style: TextStyle(
-          color: Colors.black,
-        ),
-      ),
-    );
-
+        onPressed: () {
+          Get.back();
+          selectImage(ImageSource.gallery);
+        },
+        child: Text(
+          'GALERIA',
+          style: TextStyle(color: Colors.black),
+        ));
     Widget cameraButton = ElevatedButton(
-      onPressed: () {
-        Get.back();
-        selectImage(ImageSource.camera);
-      },
-      child: Text(
-        'CAMARA',
-        style: TextStyle(
-          color: Colors.black,
-        ),
-      ),
-    );
+        onPressed: () {
+          Get.back();
+          selectImage(ImageSource.camera);
+        },
+        child: Text(
+          'CAMARA',
+          style: TextStyle(color: Colors.black),
+        ));
 
     AlertDialog alertDialog = AlertDialog(
       title: Text('Selecciona una opcion'),
       actions: [galleryButton, cameraButton],
     );
+
     showDialog(
         context: context,
         builder: (BuildContext context) {
