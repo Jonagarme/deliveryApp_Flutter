@@ -72,7 +72,7 @@ class RegisterPage extends StatelessWidget {
             _textFieldPhone(),
             _textFieldPassword(),
             _textFieldConfirmPassword(),
-            _buttonRegister(),
+            _buttonRegister(context),
           ],
         ),
       ),
@@ -177,7 +177,7 @@ class RegisterPage extends StatelessWidget {
     );
   }
 
-  Widget _buttonRegister() {
+  Widget _buttonRegister(BuildContext context) {
     return Container(
       width: double.infinity,
       margin: EdgeInsets.symmetric(
@@ -185,7 +185,7 @@ class RegisterPage extends StatelessWidget {
         vertical: 40,
       ),
       child: ElevatedButton(
-        onPressed: () => con.register(),
+        onPressed: () => con.register(context),
         //onPressed: () => Get.toNamed('/home'),
         style: ElevatedButton.styleFrom(
           padding: EdgeInsets.symmetric(

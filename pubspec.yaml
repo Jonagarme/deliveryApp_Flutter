@@ -38,6 +38,7 @@ dependencies:
   get_storage: ^2.0.3
   image_picker: ^0.8.4+11
   http: ^0.13.4
+  sn_progress_dialog: ^1.0.3
 
 dev_dependencies:
   flutter_test:

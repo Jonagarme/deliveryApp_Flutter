@@ -11,6 +11,7 @@ import 'package:flutter_app_delivery/src/providers/users_providers.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:sn_progress_dialog/progress_dialog.dart';
 
 class RegisterController extends GetxController {
   TextEditingController emailController = TextEditingController();
@@ -83,7 +84,7 @@ class RegisterController extends GetxController {
     }
   } */
 
-  void register() async {
+  void register(BuildContext context) async {
     String email = emailController.text.trim();
     String name = nameController.text;
     String lastname = lastnameController.text;
@@ -95,6 +96,10 @@ class RegisterController extends GetxController {
     print('Password ${password}');
 
     if (isValidForm(email, name, lastname, phone, password, confirmPassword)) {
+
+    ProgressDialog progressDialog = ProgressDialog(context: context);
+    progressDialog.show(max: 100, msg: 'Registrando datos...');
+
       User user = User(
         email: email,
         name: name,
@@ -104,15 +109,14 @@ class RegisterController extends GetxController {
       );
 
       Stream stream = await usersProvider.createWithImageUser(user, imageFile!);
-      print('Password ${user}');
       stream.listen((res) {
+        progressDialog.close();
         ResponseApi responseApi = ResponseApi.fromJson(json.decode(res));
 
         try {
           if (responseApi.success == true) {
             GetStorage()
                 .write('user', responseApi.data); // DATOS DEL USUARIO EN SESION
-            print('navego correctamente');
             goToHomePage();
             //Get.toNamed('/home');
             //Get.to(() => HomePage());
