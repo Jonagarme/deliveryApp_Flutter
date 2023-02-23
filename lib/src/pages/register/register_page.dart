@@ -186,6 +186,7 @@ class RegisterPage extends StatelessWidget {
       ),
       child: ElevatedButton(
         onPressed: () => con.register(),
+        //onPressed: () => Get.toNamed('/home'),
         style: ElevatedButton.styleFrom(
           padding: EdgeInsets.symmetric(
             vertical: 15,

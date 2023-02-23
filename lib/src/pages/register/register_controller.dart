@@ -1,9 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_app_delivery/src/models/response_api.dart';
 import 'package:flutter_app_delivery/src/models/user.dart';
+import 'package:flutter_app_delivery/src/pages/home/home_page.dart';
+import 'package:flutter_app_delivery/src/pages/login/login_page.dart';
 import 'package:flutter_app_delivery/src/providers/users_providers.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -21,6 +24,64 @@ class RegisterController extends GetxController {
 
   ImagePicker picker = ImagePicker();
   File? imageFile;
+  static const home = "/home";
+
+  /* Future<void> register() async {
+    String email = emailController.text.trim();
+    String name = nameController.text;
+    String lastname = lastnameController.text;
+    String phone = phoneController.text;
+    String password = passwordController.text.trim();
+    String confirmPassword = confirmPasswordController.text.trim();
+
+    print('Email ${email}');
+    print('Password ${password}');
+
+    if (isValidForm(email, name, lastname, phone, password, confirmPassword)) {
+      User user = User(
+        email: email,
+        name: name,
+        lastname: lastname,
+        phone: phone,
+        password: password,
+      );
+
+      final url = Uri.parse(
+          'http://192.168.1.9:3000/api/users/createWithImage'); // Cambia esto por la URL de tu backend
+      final request = http.MultipartRequest('POST', url);
+      request.fields.addAll({
+        'user': json.encode(user.toJson()),
+      });
+      if (imageFile != null) {
+        final fileStream = http.ByteStream(imageFile!.openRead());
+        final fileLength = await imageFile!.length();
+        final fileName = imageFile!.path.split('/').last;
+        final multipartFile = http.MultipartFile(
+          'image',
+          fileStream,
+          fileLength,
+          filename: fileName,
+        );
+        request.files.add(multipartFile);
+      }
+
+      try {
+        final response = await request.send();
+        final responseString = await response.stream.bytesToString();
+        final jsonResponse = json.decode(responseString);
+        if (response.statusCode == 201 && jsonResponse['success'] == true) {
+          GetStorage().write('user', jsonResponse['data']);
+          goToHomePage();
+        } else {
+          Get.snackbar('Registro fallido', jsonResponse['message'] ?? '');
+        }
+      } catch (e) {
+        print(e);
+        Get.snackbar(
+            'Registro fallido', 'Hubo un error con el registro del usuario');
+      }
+    }
+  } */
 
   void register() async {
     String email = emailController.text.trim();
@@ -43,26 +104,44 @@ class RegisterController extends GetxController {
       );
 
       Stream stream = await usersProvider.createWithImageUser(user, imageFile!);
+      print('Password ${user}');
       stream.listen((res) {
         ResponseApi responseApi = ResponseApi.fromJson(json.decode(res));
 
-        if (responseApi.success == true) {
-          GetStorage()
-              .write('user', responseApi.data); // DATOS DEL USUARIO EN SESION
-          goToHomePage();
-        } else {
-          Get.snackbar('Registro fallido', responseApi.message ?? '');
+        try {
+          if (responseApi.success == true) {
+            GetStorage()
+                .write('user', responseApi.data); // DATOS DEL USUARIO EN SESION
+            print('navego correctamente');
+            goToHomePage();
+            //Get.toNamed('/home');
+            //Get.to(() => HomePage());
+          } else {
+            Get.snackbar('Registro fallido', responseApi.message ?? '');
+          }
+        } catch (e) {
+          print(e);
         }
       });
     }
   }
 
   void goToHomePage() {
+    //Get.offNamedUntil('/home', (route) => false);
     Get.offNamedUntil('/home', (route) => false);
+    /* Get.to(
+      () => HomePage(),
+    ); */
   }
 
-  bool isValidForm(String email, String name, String lastname, String phone,
-      String password, String confirmPassword) {
+  bool isValidForm(
+    String email,
+    String name,
+    String lastname,
+    String phone,
+    String password,
+    String confirmPassword,
+  ) {
     if (email.isEmpty) {
       Get.snackbar('Formulario no valido', 'Debes ingresar el email');
       return false;

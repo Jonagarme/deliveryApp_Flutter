@@ -50,7 +50,7 @@ class UsersProvider extends GetConnect {
     }
     ResponseApi responseApi = ResponseApi.fromJson(response.body);
     return responseApi;
-  }*/
+  } */
 
   Future<ResponseApi> login(String email, String password) async {
     Response response = await post(

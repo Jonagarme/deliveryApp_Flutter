@@ -29,10 +29,11 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    print('Usuario id: ${userSession.id}');
     return GetMaterialApp(
       title: 'Delivery Udemy',
       debugShowCheckedModeBanner: false,
-      initialRoute: userSession.id != null ? 'home': '/',
+      initialRoute: userSession.id != null ? '/home' : '/',
       getPages: [
         GetPage(name: '/', page: () => LoginPage()),
         GetPage(name: '/register', page: () => RegisterPage()),
